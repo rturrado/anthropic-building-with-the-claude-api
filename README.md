@@ -9,9 +9,13 @@ and the same dependencies.
 
 1.  `uv sync`
 2.  `cp .env.example .env`
-3.  Edit `.env` and set your real `ANTHROPIC_API_KEY`. See [Getting the key](#getting-the-key) for details.
+3.  Edit `.env` and set your real `ANTHROPIC_API_KEY` and `VOYAGE_API_KEY`.
+    See [Getting the keys](#getting-the-keys) for details.
+    `VOYAGE_API_KEY` is only required for chapter 5 (RAG embeddings); the rest of the chapters run with `ANTHROPIC_API_KEY` alone.
 
-### Getting the key
+### Getting the keys
+
+#### `ANTHROPIC_API_KEY`
 
 1.  Log in to the [Anthropic Console](https://console.anthropic.com).
 2.  Go to *Settings / API Keys* and click *Create Key*.
@@ -19,6 +23,13 @@ and the same dependencies.
 
 New accounts get a small free credit.
 Once it runs out, requests fail with `429` until you top up or enable billing on the workspace.
+
+#### `VOYAGE_API_KEY`
+
+1.  Sign up at [VoyageAI](https://www.voyageai.com) and go to the API keys dashboard.
+2.  Create a key and copy it.
+
+Chapter 5 uses `voyage-3-large` for embeddings; the free tier is enough to run the notebook end to end.
 
 ## Running a chapter
 
