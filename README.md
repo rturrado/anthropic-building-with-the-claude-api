@@ -50,4 +50,4 @@ Change the path to the chapter you want to run.
 4.  Tool use
 5.  Retrieval-augmented generation
 6.  Features of Claude (thinking, images, PDF, citations, caching, code execution + files)
-7.  Model Context Protocol
+7.  Model Context Protocol — interactive CLI app, see [`7_model_context_protocol/README.md`](7_model_context_protocol/README.md).
