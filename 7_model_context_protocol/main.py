@@ -9,12 +9,14 @@ from core.cli_chat import CliChat
 from dotenv import load_dotenv
 from mcp_client import MCPClient
 
+from models import MODEL_HAIKU
+
 load_dotenv()
 
-claude_model = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5")
 anthropic_api_key = os.getenv("ANTHROPIC_API_KEY", "")
-
 assert anthropic_api_key, "Error: ANTHROPIC_API_KEY cannot be empty. Update .env"
+
+claude_model = MODEL_HAIKU
 
 
 async def main():
