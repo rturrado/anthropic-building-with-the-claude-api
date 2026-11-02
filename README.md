@@ -1,6 +1,6 @@
 # Building with the Claude API - parallel exercises
 
-Side project I run in parallel to the free [Building with the Claude API](https://anthropic.skilljar.com/building-with-the-claude-api) course from Anthropic Academy.
+Side project I run in parallel to the free [Building with the Claude API](https://anthropic.skilljar.com/claude-with-the-anthropic-api) course from Anthropic Academy.
 One folder per chapter at the project root, all sharing the same helper modules
 (`chat.py`, `chat_tools.py`, `chat_cache.py`, `files_api.py`, `models.py`, `tool_schemas.py`)
 and the same dependencies.
