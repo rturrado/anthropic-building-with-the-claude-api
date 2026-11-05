@@ -81,10 +81,12 @@ class MCPClient:
 # For testing
 async def main():
     async with MCPClient(
-        # If using Python without UV, update command to 'python' and remove "run" from args.
         command="uv",
         args=["run", "mcp_server.py"],
     ) as _client:
+        # Uncomment the two lines below to verify the client/server connection by listing the server's tools:
+        # result = await _client.list_tools()
+        # print(result)
         pass
 
 
