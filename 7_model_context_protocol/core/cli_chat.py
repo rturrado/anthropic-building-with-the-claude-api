@@ -86,29 +86,9 @@ def convert_prompt_message_to_message_param(
     prompt_message: PromptMessage,
 ) -> MessageParam:
     role = "user" if prompt_message.role == "user" else "assistant"
-
     content = prompt_message.content
-
-    # Check if content is a dict-like object with a "type" field
-    if isinstance(content, dict) or hasattr(content, "__dict__"):
-        content_type = content.get("type", None) if isinstance(content, dict) else getattr(content, "type", None)
-        if content_type == "text":
-            content_text = content.get("text", "") if isinstance(content, dict) else getattr(content, "text", "")
-            return {"role": role, "content": content_text}
-
-    if isinstance(content, list):
-        text_blocks = []
-        for item in content:
-            # Check if item is a dict-like object with a "type" field
-            if isinstance(item, dict) or hasattr(item, "__dict__"):
-                item_type = item.get("type", None) if isinstance(item, dict) else getattr(item, "type", None)
-                if item_type == "text":
-                    item_text = item.get("text", "") if isinstance(item, dict) else getattr(item, "text", "")
-                    text_blocks.append({"type": "text", "text": item_text})
-
-        if text_blocks:
-            return {"role": role, "content": text_blocks}
-
+    if getattr(content, "type", None) == "text":
+        return {"role": role, "content": getattr(content, "text", "")}
     return {"role": role, "content": ""}
 
 
