@@ -82,10 +82,23 @@ cd 7_model_context_protocol
 uv run mcp dev mcp_server.py
 ```
 
-Opens a local web UI (URL printed in the terminal). Click **Connect**, then **Tools / List Tools** to see
-`list_docs`, `read_doc_contents` and `edit_document`, pick one, fill in the arguments, and click **Run Tool** to see the
-raw JSON response. The **Resources** and **Prompts** tabs work the same way. Useful when debugging a new MCP
-server before hooking it to Claude.
+You should see something like:
+
+```
+Starting MCP inspector...
+⚙️ Proxy server listening on port 6277
+🔍 MCP Inspector is up and running at http://127.0.0.1:6274 🚀
+```
+
+Then:
+
+- Open the URL printed in the terminal in a browser to show the local web UI.
+- Click **Connect**.
+- Click **Tools / List Tools** to see `list_docs`, `read_doc_contents` and `edit_document`.
+- Pick a tool, fill in the arguments, and click **Run Tool** to see the raw JSON response.
+- The **Resources** and **Prompts** tabs work the same way.
+
+Useful when debugging a new MCP server before hooking it to Claude.
 
 ## Server surface
 
