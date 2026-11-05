@@ -1,3 +1,10 @@
+"""Interactive terminal UI for the chat loop.
+
+`CliApp.run()` reads the user's prompt with `prompt_toolkit` and hands it to `CliChat.run()`.
+`UnifiedCompleter` offers Tab-completion for `@doc_id` resource references and `/command` prompts
+loaded from the MCP server; `CommandAutoSuggest` hints the first argument of a `/command`.
+"""
+
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggest, Suggestion
 from prompt_toolkit.buffer import Buffer

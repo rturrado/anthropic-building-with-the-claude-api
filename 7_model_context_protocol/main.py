@@ -1,3 +1,10 @@
+"""Entry point of the chapter 7 MCP chat demo.
+
+Reads any extra server scripts from argv, constructs an `MCPClient` for the local `mcp_server.py`
+(plus one per extra script), wires them to the `Claude` service and a `CliChat` + `CliApp`,
+and starts the interactive chat loop.
+"""
+
 import asyncio
 import os
 import sys

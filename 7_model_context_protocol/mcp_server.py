@@ -1,3 +1,11 @@
+"""MCP server exposing tools, resources, and prompts for a small fake document store.
+
+Tools: `list_docs`, `read_doc_contents`, `edit_document`.
+Resources: `docs://documents` (list), `docs://documents/{doc_id}` (single doc contents).
+Prompts: `format` (rewrite as Markdown), `summarize` (short summary).
+Documents live in-memory in the `docs` dict; `edit_document` mutates it.
+"""
+
 from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.prompts import base
 from pydantic import Field

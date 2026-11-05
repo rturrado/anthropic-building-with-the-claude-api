@@ -1,3 +1,10 @@
+"""Base chat loop with tool execution.
+
+`Chat.run()` sends the message history + aggregated tool schemas to Claude,
+dispatches any `tool_use` blocks via `ToolManager` back to the MCP servers,
+appends the results, and loops until `stop_reason != "tool_use"`.
+"""
+
 from anthropic.types import MessageParam
 from mcp_client import MCPClient
 

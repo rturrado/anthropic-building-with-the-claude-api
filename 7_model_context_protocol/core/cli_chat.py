@@ -1,3 +1,10 @@
+"""`Chat` subclass that adds `@`-resource references and `/command` prompts via a dedicated doc client.
+
+`_process_query` is the entry point: `/command docid` expands into an MCP prompt that is appended to the
+history; otherwise, `@doc_id`-mentions in the query are resolved through the doc client's resources and
+their contents wrapped inside `<context>` in the final prompt.
+"""
+
 from anthropic.types import MessageParam
 from mcp.types import Prompt, PromptMessage
 from mcp_client import MCPClient

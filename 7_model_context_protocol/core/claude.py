@@ -1,3 +1,10 @@
+"""Thin wrapper around the Anthropic SDK.
+
+The `Claude` class holds the SDK client and exposes `chat` (non-streaming in this demo).
+Module-level helpers (`add_user_message`, `add_assistant_message`, `text_from_message`)
+manipulate the messages list without needing a `Claude` instance.
+"""
+
 from anthropic import Anthropic
 from anthropic.types import Message
 

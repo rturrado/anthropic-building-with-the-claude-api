@@ -1,3 +1,10 @@
+"""Tool aggregation and dispatch across multiple MCP clients.
+
+`ToolManager.get_all_tools()` gathers the schemas from every connected MCP client in Anthropic's format.
+`ToolManager.execute_tool_requests()` walks a Claude message's `tool_use` blocks,
+finds the client that owns each tool, calls it, and returns the result blocks for the next turn.
+"""
+
 import json
 from typing import Literal
 

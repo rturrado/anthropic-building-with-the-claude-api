@@ -1,3 +1,10 @@
+"""MCP client wrapper over `mcp.ClientSession` for stdio-transport subprocesses.
+
+Exposes thin passthroughs over the underlying session for
+`list_tools`, `call_tool`, `list_prompts`, `get_prompt`, and `read_resource`.
+Context-manager friendly: `async with MCPClient(...)` connects on entry and cleans up on exit.
+"""
+
 import asyncio
 import json
 from contextlib import AsyncExitStack
