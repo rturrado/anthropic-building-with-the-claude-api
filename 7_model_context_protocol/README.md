@@ -132,37 +132,103 @@ Three concrete walkthroughs that cover the three CLI interaction styles.
 
 ### `What topics does @deposition.md cover?` (resource reference)
 
-1. CLI (`core/cli_chat.py:_extract_resources`) scans the query, finds `@deposition.md`.
-2. CLI → MCP server: `read_resource("docs://documents/deposition.md")` via `mcp_client.read_resource`.
-3. Server → CLI: resource contents (`"This deposition covers the testimony of Angela Smith, P.E."`).
-4. CLI wraps the query in a prompt that embeds the content inline inside `<context>...</context>`.
-5. CLI → Claude: a single `messages.create` call with the wrapped prompt.
-6. Claude answers directly, no `tool_use` emitted — the wrapper tells it the content is already present.
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant CLI as CLI
+    participant S as MCP server
+    participant C as Claude
+
+    U->>CLI: What topics does @deposition.md cover?
+    CLI->>CLI: _extract_resources parses @deposition.md
+    CLI->>S: read_resource(docs://documents)
+    S-->>CLI: list of doc_ids
+    CLI->>S: read_resource(docs://documents/deposition.md)
+    S-->>CLI: deposition contents
+    CLI->>CLI: wrap query in <context>
+    CLI->>S: list_tools
+    S-->>CLI: tools
+    CLI->>C: messages.create(wrapped prompt, tools)
+    C-->>CLI: direct answer (no tool_use)
+```
+
+Walkthrough of the key moments:
+
+- **Steps 1-7 (resource extraction)**: `_extract_resources` parses the `@`-mention, asks the server for the full list of doc ids, fetches the contents of the matched doc, and wraps them inside `<context>...</context>` in the prompt.
+- **Steps 8-9 (tool list)**: `ToolManager.get_all_tools` calls `list_tools` on every client before each `messages.create` (no cache — happens on every chat-loop iteration).
+- **Steps 10-11 (single turn with Claude)**: Claude answers directly; the wrapper tells it the content is already present, so no `tool_use` is emitted.
 
 Pedagogical point: `@` is **app-controlled**. The resource is pulled in by our code before Claude ever runs. Zero round-trips with the server during Claude's turn.
 
 ### `/summarize report.pdf` (prompt + single tool)
 
-1. CLI (`core/cli_chat.py:_process_command`) detects the leading `/`, splits into `("summarize", "report.pdf")`.
-2. CLI → MCP server: `get_prompt("summarize", {"doc_id": "report.pdf"})` via `mcp_client.get_prompt`.
-3. Server runs `summarize_document(doc_id="report.pdf")` and returns the expanded `UserMessage`: *"Your goal is to summarize... use the `read_doc_contents` tool to read the document... Respond with the summary text only."*
-4. CLI appends that message to the history and starts the chat loop (`core/chat.py:run`).
-5. CLI → Claude: `messages.create` with the expanded prompt plus the aggregated tool list (`list_docs`, `read_doc_contents`, `edit_document`).
-6. Claude emits a `tool_use` for `read_doc_contents(doc_id="report.pdf")`.
-7. `core/tools.py:ToolManager.execute_tool_requests` finds the right client, calls `client.call_tool`, gets the content back.
-8. CLI appends the `tool_result` as a user message, loops back to step 5.
-9. Claude returns a text summary; `stop_reason != "tool_use"` breaks the loop.
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant CLI as CLI
+    participant S as MCP server
+    participant C as Claude
+
+    U->>CLI: /summarize report.pdf
+    CLI->>CLI: _process_command splits args
+    CLI->>S: get_prompt(summarize, doc_id=report.pdf)
+    S-->>CLI: expanded UserMessage
+    CLI->>S: list_tools
+    S-->>CLI: tools
+    CLI->>C: messages.create(prompt, tools)
+    C-->>CLI: tool_use(read_doc_contents, doc_id=report.pdf)
+    CLI->>S: call_tool(read_doc_contents)
+    S-->>CLI: doc_contents
+    CLI->>C: messages.create(history + doc_contents, tools)
+    C-->>CLI: final summary text
+```
+
+Walkthrough of the key moments:
+
+- **Steps 1-4 (prompt expansion)**: user issues `/summarize`, CLI asks the server for the expanded `UserMessage` and appends it to the history.
+- **Steps 5-8 (first turn with Claude)**: CLI fetches `list_tools`, sends prompt + tools, Claude emits `tool_use` for `read_doc_contents`.
+- **Steps 9-10 (tool execution)**: CLI calls `read_doc_contents` and gets back the document.
+- **Steps 11-12 (second turn, final answer)**: CLI sends the updated history, Claude returns the summary and the loop exits (`stop_reason != "tool_use"`).
 
 Pedagogical point: `/` is **user-controlled**. The prompt text drives Claude toward a specific tool call (`read_doc_contents`). The server never runs the tool itself — it just hands Claude a prompt that nudges it.
 
 ### `/format plan.md` (prompt + multi-tool loop)
 
-1-4. Same as `/summarize`, but the expanded prompt instructs Claude to use `edit_document` after reading.
-5. CLI → Claude.
-6. Claude emits `tool_use` for `read_doc_contents(doc_id="plan.md")`.
-7. CLI runs it, feeds the content back.
-8. Claude decides on the Markdown rewrite, emits `tool_use` for `edit_document(doc_id="plan.md", old_str=..., new_str=...)`.
-9. CLI runs it; `mcp_server.py:edit_document` mutates the in-memory `docs` dict.
-10. Claude emits a final text message with the rewritten doc; loop exits.
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant CLI as CLI
+    participant S as MCP server
+    participant C as Claude
+
+    U->>CLI: /format plan.md
+    CLI->>CLI: _process_command splits args
+    CLI->>S: get_prompt(format, doc_id=plan.md)
+    S-->>CLI: expanded UserMessage
+    CLI->>S: list_tools
+    S-->>CLI: tools
+    CLI->>C: messages.create(prompt, tools)
+    C-->>CLI: tool_use(read_doc_contents)
+    CLI->>S: call_tool(read_doc_contents)
+    S-->>CLI: doc_contents
+    CLI->>C: messages.create(history + doc_contents, tools)
+    C-->>CLI: tool_use(edit_document, old_str, new_str)
+    CLI->>S: call_tool(edit_document)
+    S-->>CLI: ack (docs dict mutated)
+    CLI->>C: messages.create(history + ack, tools)
+    C-->>CLI: final text (rewritten doc)
+```
+
+Walkthrough of the key moments:
+
+- **Steps 1-4 (prompt expansion)**: same shape as `/summarize` — CLI asks the server for the expanded `UserMessage` and appends it.
+- **Steps 5-8 (first turn)**: CLI fetches `list_tools`, sends prompt + tools, Claude emits `tool_use` for `read_doc_contents`.
+- **Steps 9-10 (read tool)**: CLI calls `read_doc_contents` and gets back the document.
+- **Steps 11-12 (second turn)**: CLI sends the updated history, Claude emits `tool_use` for `edit_document`.
+- **Steps 13-14 (edit tool)**: CLI calls `edit_document`; `mcp_server.py:edit_document` mutates the in-memory `docs` dict.
+- **Steps 15-16 (final turn)**: CLI sends the updated history, Claude returns the rewritten doc and the loop exits.
 
 Pedagogical point: a single prompt can drive **a chain** of tool calls. The loop in `core/chat.py:run` keeps calling Claude until `stop_reason != "tool_use"`, so you get as many turns as the task needs.
