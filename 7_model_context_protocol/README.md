@@ -66,7 +66,7 @@ You get a `> ` prompt. Three ways to interact:
   Tab-completion suggests the available ids.
 - **Prompt command** (`/name docid`): invoke one of the MCP prompts.
   ```
-  > /summarize deposition.md
+  > /summarize report.pdf
   > /format plan.md
   ```
   Tab-completion suggests command names and document ids.
@@ -130,7 +130,7 @@ What `mcp_server.py` exposes to any connected MCP client:
 
 Three concrete walkthroughs that cover the three CLI interaction styles.
 
-### `@deposition.md who is this about?` (resource reference)
+### `What topics does @deposition.md cover?` (resource reference)
 
 1. CLI (`core/cli_chat.py:_extract_resources`) scans the query, finds `@deposition.md`.
 2. CLI → MCP server: `read_resource("docs://documents/deposition.md")` via `mcp_client.read_resource`.
