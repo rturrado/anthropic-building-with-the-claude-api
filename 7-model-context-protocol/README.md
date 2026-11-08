@@ -52,7 +52,7 @@ To override, set `CLAUDE_MODEL=<id>` in `.env`.
 The app spawns the MCP server as a subprocess (`uv run mcp_server.py`), so cwd must be the chapter folder:
 
 ```
-cd 7_model_context_protocol
+cd 7-model-context-protocol
 uv run main.py
 ```
 
@@ -78,7 +78,7 @@ Exit with Ctrl+C.
 The `mcp` CLI (installed via `mcp[cli]`) ships an inspector you can use to poke at the server without the chat app:
 
 ```
-cd 7_model_context_protocol
+cd 7-model-context-protocol
 uv run mcp dev mcp_server.py
 ```
 

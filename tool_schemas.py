@@ -56,7 +56,7 @@ set_reminder_schema = {
     },
 }
 
-# db_query_schema has no handler and no real demo: it is token filler for `6_features/5_prompt_caching`,
+# db_query_schema has no handler and no real demo: it is token filler for `6-features/5_prompt_caching`,
 # where the schema stack must cross the 1024-token minimum for ephemeral cache hits.
 db_query_schema = {
     "name": "db_query",

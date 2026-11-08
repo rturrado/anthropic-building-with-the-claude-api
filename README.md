@@ -37,7 +37,7 @@ Each chapter is a folder of Jupyter notebooks. Open any `.ipynb` with Jupyter or
 From the command line:
 
 ```
-uv run jupyter notebook 1_accessing_claude_with_the_api/
+uv run jupyter notebook 1-accessing-claude-with-the-api/
 ```
 
 Change the path to the chapter you want to run.
@@ -50,4 +50,4 @@ Change the path to the chapter you want to run.
 4.  Tool use
 5.  Retrieval-augmented generation
 6.  Features of Claude (thinking, images, PDF, citations, caching, code execution + files)
-7.  Model Context Protocol — interactive CLI app, see [`7_model_context_protocol/README.md`](7_model_context_protocol/README.md).
+7.  Model Context Protocol — interactive CLI app, see [`7-model-context-protocol/README.md`](7-model-context-protocol/README.md).
