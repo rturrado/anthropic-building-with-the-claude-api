@@ -24,8 +24,13 @@ only-include = ["chat.py", "chat_cache.py", "chat_tools.py", "files_api.py", "mo
 [dependency-groups]
 dev = [
     "pyright>=1.1.396",
+    "pytest>=8.3.0",
     "ruff>=0.17.1",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.ruff]
 line-length = 120
