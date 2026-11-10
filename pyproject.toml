@@ -23,6 +23,7 @@ only-include = ["chat.py", "chat_cache.py", "chat_tools.py", "files_api.py", "mo
 
 [dependency-groups]
 dev = [
+    "pyright>=1.1.396",
     "ruff>=0.17.1",
 ]
 
@@ -35,3 +36,10 @@ select = ["B", "E", "F", "I", "SIM", "UP"]
 [tool.ruff.lint.per-file-ignores]
 "*.ipynb" = ["E501"]
 "tool_schemas.py" = ["E501"]
+
+[tool.pyright]
+pythonVersion = "3.14"
+include = ["chat.py", "chat_cache.py", "chat_tools.py", "files_api.py", "models.py", "tool_schemas.py"]
+exclude = ["**/.venv", "**/__pycache__", "**/.ipynb_checkpoints", "**/*.ipynb"]
+typeCheckingMode = "basic"
+reportMissingTypeStubs = "none"
