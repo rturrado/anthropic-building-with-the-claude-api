@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,10 +17,22 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: uv sync --group dev --frozen
-      - name: Lint
+      - name: Ruff
         run: uv run ruff check
-      - name: Typecheck
+      - name: Pyright
         run: uv run pyright
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.14"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --group dev --frozen
       - name: Import smoke tests
         run: uv run pytest tests/test_import_smoke.py
       - name: Notebook compile tests
