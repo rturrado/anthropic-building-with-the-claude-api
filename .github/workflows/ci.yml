@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.14"
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --group dev --frozen
+      - name: Lint
+        run: uv run ruff check
+      - name: Typecheck
+        run: uv run pyright
+      - name: Import smoke tests
+        run: uv run pytest tests/test_import_smoke.py
+      - name: Notebook compile tests
+        run: uv run pytest tests/test_notebook_compile.py
+      - name: Wrapper mock tests
+        run: uv run pytest tests/wrapper_mocks/
