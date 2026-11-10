@@ -44,7 +44,7 @@ select = ["B", "E", "F", "I", "SIM", "UP"]
 
 [tool.pyright]
 pythonVersion = "3.14"
-include = ["chat.py", "chat_cache.py", "chat_tools.py", "files_api.py", "models.py", "tool_schemas.py"]
+include = ["chat.py", "chat_cache.py", "chat_tools.py", "files_api.py", "models.py", "tool_schemas.py", "tests"]
 exclude = ["**/.venv", "**/__pycache__", "**/.ipynb_checkpoints", "**/*.ipynb"]
 typeCheckingMode = "basic"
 reportMissingTypeStubs = "none"
